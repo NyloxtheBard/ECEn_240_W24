@@ -1,0 +1,49 @@
+Inital Error Message 
+/*
+Arduino: 1.8.19 (Linux), Board: "Arduino Nano, ATmega328P (Old Bootloader)"
+
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘bool isButtonPushed(int)’:
+Lab2_Skeleton_Code:261:73: error: expected primary-expression before ‘)’ token
+   if (/*Add code to determine if the voltage on the pin is high or low*/){
+                                                                         ^
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘bool isCollision()’:
+Lab2_Skeleton_Code:278:65: error: expected primary-expression before ‘)’ token
+   if (/*Add code to detect if the collision button was pressed*/) {
+                                                                 ^
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘void fsmCollisionDetection()’:
+Lab2_Skeleton_Code:333:74: error: expected primary-expression before ‘)’ token
+       if ( /*Add code to determine when you need to go back to state 0*/ ) {
+                                                                          ^
+exit status 1
+expected primary-expression before ‘)’ token
+
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences. */
+
+LED ON AND LED OFF CODE CHANGE 
+
+/*
+Arduino: 1.8.19 (Linux), Board: "Arduino Nano, ATmega328P (Old Bootloader)"
+
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘bool isButtonPushed(int)’:
+Lab2_Skeleton_Code:261:73: error: expected primary-expression before ‘)’ token
+   if (/*Add code to determine if the voltage on the pin is high or low*/){
+                                                                         ^
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘bool isCollision()’:
+Lab2_Skeleton_Code:278:65: error: expected primary-expression before ‘)’ token
+   if (/*Add code to detect if the collision button was pressed*/) {
+                                                                 ^
+/fsf/coltony/Downloads/Lab2_Skeleton_Code/Lab2_Skeleton_Code.ino: In function ‘void fsmCollisionDetection()’:
+Lab2_Skeleton_Code:333:74: error: expected primary-expression before ‘)’ token
+       if ( /*Add code to determine when you need to go back to state 0*/ ) {
+                                                                          ^
+exit status 1
+expected primary-expression before ‘)’ token
+
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences.
+*/
