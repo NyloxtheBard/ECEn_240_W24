@@ -170,6 +170,9 @@ void loop() {
   // This DebugStateOutput flag can be used to easily turn on the
   // serial debugging to know what the robot is perceiving and what
   // actions the robot wants to take.
+  /*int SensorValue = analogRead(A4);
+  float voltage = SensorValue * 5 / 1023;
+  Serial.println(voltage); Used to test voltage */
   int DebugStateOutput = false; // Change false to true to debug
   
   RobotPerception(); // PERCEPTION
@@ -206,19 +209,18 @@ void RobotPerception() {
   // Photodiode Sensing
   //Serial.println(getPinVoltage(BUTTON_2)); //uncomment for debugging
   
-  /* Delete this whole line for milestone 2
   if (isButtonPushed(BUTTON_2)){
     SensedLightLeft = DETECTION_YES;
   } else {
     SensedLightLeft = DETECTION_NO;
   }
   // Remember, you can find the buttons and which one goes to what towards the top of the file
-  if (*Add code to sense if light is detected on the right*) { 
-    *Action when light IS detected on the right*
+  if (isButtonPushed(BUTTON_4)) { 
+    SensedLightRight = DETECTION_YES;
   } else {
-    *Action when light is NOT detected on the right*
+    SensedLightRight = DETECTION_NO;
   }
-  Delete this whole line for milestone 2 */
+  
 
       
   /* Add code to detect if light is up or down. Lab 2 milestone 3*/
@@ -315,7 +317,7 @@ void fsmCollisionDetection() {
       //There is an obstacle, stop the robot
       ActionCollision = COLLISION_ON; // Sets the action to turn on the collision LED
       /* Add code in milestone 2 to stop the robot's wheels - Hint: ActionRobotDrive = ________ */
-      
+      ActionRobotDrive = DRIVE_STOP;
       
       //State transition logic
       if ( SensedCollision == DETECTION_NO) {
@@ -351,7 +353,7 @@ void fsmSteerRobot() {
   static int steerRobotState = 0;
   //Serial.println(steerRobotState); //uncomment for debugging
 
-  /* Get rid of this whole line for milestone 2
+
   switch (steerRobotState) {
     case 0: //light is not detected
       ActionRobotDrive = DRIVE_STOP;
@@ -366,31 +368,46 @@ void fsmSteerRobot() {
     
     case 1: //light is to the left of robot
       //The light is on the left, turn left
-      ActionRobotDrive =  //Add appropriate variable to set the action to turn left
+      ActionRobotDrive = DRIVE_LEFT; //Add appropriate variable to set the action to turn left
       
       //State transition logic
-      if ( *Add code: If light is also to the right, the light is in front* ) {
-        *Add code to transition to the "light on left and right" state* //if light is on right, then go straight
-      } else if ( *Add code: no longer light to the left ) {
-        *Add transition code* //if light is not on left, go back to stop state
+      if ( SensedLightRight == DETECTION_YES /*Add code: If light is also to the right, the light is in front*/ ) {
+        steerRobotState = 3; //*Add code to transition to the "light on left and right" state* //if light is on right, then go straight
+      } else if ( SensedLightLeft == DETECTION_NO /*Add code: no longer light to the left*/ ) {
+        steerRobotState = 0; //*Add transition code* //if light is not on left, go back to stop state
       }
       
       break;
     
     case 2: //light is to the right of robot
-      //The light is on the right, turn right
-      *Add code to set the action*
-      
+      /*The light is on the right, turn right
+      *Add code to set the action*/
+      ActionRobotDrive = DRIVE_RIGHT;
       //State transition logic
-      *Add code to transition to the "light on right and left" state 
-
+      if (SensedLightLeft == DETECTION_YES /*Add code to transition to the "light on right and left" state*/ ) {
+      steerRobotState = 3;
+      } else if ( SensedLightRight == DETECTION_NO ) {
+        steerRobotState = 0;
+      }
+       
       break;
-      
+
+    case 3: //Light is on left and right
+    ActionRobotDrive = DRIVE_STRAIGHT;
     // light is on both right and left
-      *Add Code: Add in a case 3 for when the light is on both the right and left 
+      if (SensedLightLeft == DETECTION_NO && SensedLightRight == DETECTION_NO ) {
+        steerRobotState = 0;
+    } else if (SensedLightLeft == DETECTION_NO && SensedLightRight == DETECTION_YES) {
+      steerRobotState = 2;
+    } else if (SensedLightRight == DETECTION_NO && SensedLightLeft == DETECTION_YES ) {
+      steerRobotState = 1;
+    } 
+
+    break;
+      /*Add Code: Add in a case 3 for when the light is on both the right and left 
       *Think about what actions you need to implement and 
       *what changes could occur that would cause a transition to another 
-      *state. Don't forget the break statement at the end of the case.
+      *state. Don't forget the break statement at the end of the case.*/
       
       
     default: // error handling
@@ -398,7 +415,6 @@ void fsmSteerRobot() {
       steerRobotState = 0;
     }
   }
-  Get rid of this whole line for milestone 2*/
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -454,17 +470,25 @@ void RobotAction() {
   // This drives the main motors on the robot
   switch(ActionRobotDrive) {
     case DRIVE_STOP:
+      doTurnLedOff(LED_2);
+      doTurnLedOff(LED_4);
       /* Add code in milestone 2 to turn off both left and right motors (LEDs right now). 
         Use the doTurnLedOff() function */
       /* DON'T FORGET TO USE YOUR LED VARIABLES AND NOT YOUR BUTTON VARIABLES FOR THIS!!! */
       break;
     case DRIVE_LEFT:
+      doTurnLedOn(LED_2);
+      doTurnLedOff(LED_4);
       /* Add code in milestone 2 to turn off the right and on the left LEDs */
       break;
     case DRIVE_RIGHT:
+      doTurnLedOn(LED_4);
+      doTurnLedOff(LED_2);
       /* Add code in milestone 2 */
       break;
     case DRIVE_STRAIGHT:
+      doTurnLedOn(LED_2);
+      doTurnLedOn(LED_4);
       /* Add code in milestone 2 */
       break;
   }
