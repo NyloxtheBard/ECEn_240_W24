@@ -225,6 +225,18 @@ void RobotPerception() {
       
   /* Add code to detect if light is up or down. Lab 2 milestone 3*/
 
+  if (isButtonPushed(BUTTON_1)){
+    SensedLightUp = DETECTION_YES;
+  } else {
+    SensedLightUp = DETECTION_NO;
+  }
+  //
+  if (isButtonPushed(BUTTON_5)){
+    SensedLightDown = DETECTION_YES;
+  } else {
+    SensedLightDown = DETECTION_NO;
+  }
+
   
 
    // Capacitive Sensor
@@ -310,7 +322,7 @@ void RobotPlanning(void) {
 ////////////////////////////////////////////////////////////////////
 void fsmCollisionDetection() {
   static int collisionDetectionState = 0;
-  Serial.println(collisionDetectionState);
+  //Serial.println(collisionDetectionState);
   
   switch (collisionDetectionState) {
     case 0: //collision detected
@@ -424,7 +436,38 @@ void fsmSteerRobot() {
 void fsmMoveServoUpAndDown() {
   static int moveServoState = 0;
   //Serial.println(moveServoState); //uncomment for debugging
-  
+  switch(moveServoState) {
+    case 0:
+    ActionServoMove = SERVO_MOVE_STOP;
+      if (SensedLightUp == DETECTION_YES && SensedLightDown == DETECTION_YES) {
+          moveServoState = 0;
+      } else if (SensedLightUp == DETECTION_YES && SensedLightDown == DETECTION_NO) {
+        moveServoState = 1;
+      }
+        else if (SensedLightUp == DETECTION_NO && SensedLightDown == DETECTION_YES) {
+        moveServoState = 2;
+      }
+
+      break;
+
+    case 1:
+    ActionServoMove = SERVO_MOVE_UP;
+      if (SensedLightDown == DETECTION_YES || SensedLightUp == DETECTION_NO) {
+        moveServoState = 0;
+
+      }
+
+      break;
+
+    case 2:
+    ActionServoMove = SERVO_MOVE_DOWN;
+    if (SensedLightUp == DETECTION_YES || SensedLightDown == DETECTION_NO) {
+      moveServoState = 0;
+      }
+
+      break;
+
+    }
   // Milestone 3
   //Create a state machine modeled after the ones in milestones 1 and 2
   // to plan the servo action based off of the perception of the robot
@@ -507,13 +550,16 @@ void MoveServo() {
   /* Add CurrentServoAngle in lab 6 */
   switch(ActionServoMove) {
     case SERVO_MOVE_STOP:
-      /* Add code in milestone 3 */
+      doTurnLedOff(LED_1);
+      doTurnLedOff(LED_5);
       break;
     case SERVO_MOVE_UP:
-      /* Add code in milestone 3 */
+      doTurnLedOn(LED_1);
+      doTurnLedOff(LED_5);
       break;
     case SERVO_MOVE_DOWN:
-      /* Add code in milestone 3 */
+      doTurnLedOn(LED_5);
+      doTurnLedOff(LED_1);
       break;
   }
 }
