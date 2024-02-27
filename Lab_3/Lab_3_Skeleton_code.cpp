@@ -37,6 +37,7 @@ your sensors and servos. */
 #define BUTTON_3  A4     // Middle Button - Collision
 #define BUTTON_4  A5     // Right middle button - Right Motor
 #define BUTTON_5  A6     // Far right button - Servo Down
+#define BATTERY_INPUT  A1
 
 // LED pins (note that digital pins do not need "D" in front of them)
 #define LED_1   6       // Far Left LED - Servo Up
@@ -44,6 +45,9 @@ your sensors and servos. */
 #define LED_3   4       // Middle LED - Collision
 #define H_BRIDGE_ENB   3       // Right Middle LED - Right Motor
 #define LED_5   2       // Far Right LED - Servo Down
+#define LED_6  7 //Red LED, Low Battery
+#define LED_7  8 //Yellow LED, Med Battery
+#define LED_8  9 //Green LED, High Battery
 
 
 // Motor enable pins - Lab 3
@@ -69,6 +73,9 @@ your sensors and servos. */
 
 // Voltage at which a button is considered to be pressed
 #define BUTTON_THRESHOLD 2.5
+
+//Full Battery Voltage in terms of Arduino V. 9V
+#define BATTERY_FUll 4.5
 
 // Voltage at which a photodiode voltage is considered to be present - Lab 5
 
@@ -109,6 +116,12 @@ your sensors and servos. */
 #define SERVO_MOVE_UP   1
 #define SERVO_MOVE_DOWN 2
 
+// Battery Monitor LED 
+#define BATTERY_OFF 3
+#define BATTERY_LOW_LED 2
+#define BATTERY_MEDIUM_LED 1
+#define BATTERY_HIGH_LED 0
+
 
 /***********************************************************/
 // Global variables that define PERCEPTION and initialization
@@ -122,8 +135,15 @@ int SensedLightLeft = DETECTION_NO;
 int SensedLightUp = DETECTION_NO;
 int SensedLightDown = DETECTION_NO;
 
+//Battery Monitor Input
+int SensedBatteryEmpty = DETECTION_YES;
+int SensedBatteryLow = DETECTION_NO;
+int SensedBatteryMed = DETECTION_NO;
+int SensedBatteryHigh = DETECTION_NO;
+
 // Capacitive sensor input (using Definitions) - Lab 4
 //int SensedCapacitiveTouch = DETECTION_NO;
+
 
 
 /***********************************************************/
@@ -138,6 +158,9 @@ int ActionRobotDrive = DRIVE_STOP;
 
 // Servo Action (using Definitions)
 int ActionServoMove =  SERVO_MOVE_STOP;
+
+//Battery Action
+int ActionBatteryMonitoring = BATTERY_OFF
 
 /********************************************************************
   SETUP function - this gets executed at power up, or after a reset
@@ -238,7 +261,32 @@ void RobotPerception() {
   } else {
     SensedLightDown = DETECTION_NO;
   }
+  
 
+  //Battery Monitoring
+  if((getPinVoltage(BATTERY_INPUT) < 0.7 * BATTERY_FUll) && (getPinVoltage(BATTERY_INPUT) >= 0)){
+    SensedBatteryEmpty = DETECTION_YES;
+  } else {
+    SensedBatteryEmpty = DETECTION_NO;
+  }
+
+  if((getPinVoltage(BATTERY_INPUT) < 0.8 * BATTERY_FUll) && (getPinVoltage(BATTERY_INPUT) > 0.7 * BATTERY_FUll)){
+    SensedBatteryLow = DETECTION_YES;
+  } else {
+    SensedBatteryLow = DETECTION_NO;
+  }
+
+  if((getPinVoltage(BATTERY_INPUT) < 0.9 * BATTERY_FUll) && (getPinVoltage(BATTERY_INPUT) > 0.8 * BATTERY_FUll)){
+    SensedBatteryMed = DETECTION_YES;
+  } else {
+    SensedBatteryMed = DETECTION_NO;
+  }
+
+  if(getPinVoltage(BATTERY_INPUT) > 0.9 * BATTERY_FUll){
+    SensedBatteryHigh = DETECTION_YES;
+  } else {
+    SensedBatteryHigh = DETECTION_NO;
+  }
   
 
    // Capacitive Sensor
@@ -315,6 +363,7 @@ void RobotPlanning(void) {
   // based on the sensing from the Perception stage.
   fsmCollisionDetection(); // Milestone 1
   fsmMoveServoUpAndDown(); // Milestone 3
+  fsmBatteryMonitoring();
   // Add Speed Control State Machine in lab 4
 }
 
@@ -495,6 +544,55 @@ void fsmChangeSpeed() {
 }
 
 
+////////////////////////////////////////////////////////////////////
+// State machine for testing the Battery Voltage
+////////////////////////////////////////////////////////////////////
+
+void fsmBatteryMonitoring(){
+  static int batteryMonitorState = 0;
+
+  switch(batteryMonitorState){
+
+    case 0:
+    ActionBatteryMonitoring = BATTERY_HIGH_LED;
+    if(SensedBatteryMed == DETECTION_YES){
+      batteryMonitorState = 1;
+    }
+    break;
+
+    case 1:
+    ActionBatteryMonitoring = BATTERY_MEDIUM_LED;
+    if(SensedBatteryLow == DETECTION_YES){
+      batteryMonitorState = 2;
+    } else if (SensedBatteryHigh == DETECTION_YES) {
+      batteryMonitorState = 0;
+    }
+    break;
+
+    case 2:
+    ActionBatteryMonitoring = BATTERY_LOW_LED;
+    if(SensedBatteryEmpty == DETECTION_YES){
+      batteryMonitorState = 3;
+    } else if (SensedBatteryMed == DETECTION_YES) {
+      batteryMonitorState = 1;
+    }
+    break;
+
+    case 3:
+    ActionBatteryMonitoring = BATTERY_OFF;
+    if(SensedBatteryLow == DETECTION_YES){
+      batteryMonitorState = 2;
+    }
+    break;
+  default: 
+    batteryMonitorState = 0;
+  }
+}
+  
+
+
+
+
 /**********************************************************************************************************
   Robot ACTION - implementing the decisions from planning to specific actions
  ********************************************************************/
@@ -538,6 +636,34 @@ void RobotAction() {
       break;
   }
   
+
+  //Battery Monitoring Setting LED's
+  switch(ActionBatteryMonitoring){
+    case BATTERY_OFF:
+    doTurnLedOff(LED_6);
+    doTurnLedOff(Led_7);
+    doTurnLedOff(LED_8);
+    break;
+
+    case BATTERY_LOW_LED:
+    doTurnLedOn(LED_6);
+    doTurnLedOff(Led_7);
+    doTurnLedOff(LED_8);
+    break;
+
+    case BATTERY_MEDIUM_LED:
+    doTurnLedOn(LED_6);
+    doTurnLedOn(Led_7);
+    doTurnLedOff(LED_8);
+    break;
+
+    case BATTERY_HIGH_LED:
+    doTurnLedOn(LED_6);
+    doTurnLedOn(Led_7);
+    doTurnLedOn(LED_8);
+    break;
+
+  }
   // This calls a function to move the servo
     MoveServo();       
 }
