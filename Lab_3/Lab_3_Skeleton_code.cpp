@@ -75,7 +75,7 @@ your sensors and servos. */
 #define BUTTON_THRESHOLD 2.5
 
 //Full Battery Voltage in terms of Arduino V. 9V
-#define BATTERY_FUll 4.5
+#define BATTERY_FUll 4.46
 
 // Voltage at which a photodiode voltage is considered to be present - Lab 5
 
@@ -160,11 +160,11 @@ int ActionRobotDrive = DRIVE_STOP;
 int ActionServoMove =  SERVO_MOVE_STOP;
 
 //Battery Action
-int ActionBatteryMonitoring = BATTERY_OFF
+int ActionBatteryMonitoring = BATTERY_OFF;
 
 /********************************************************************
   SETUP function - this gets executed at power up, or after a reset
- ********************************************************************/
+********************************************************************/
 void setup() {
   //Set up serial connection at 9600 Baud
   Serial.begin(9600);
@@ -175,6 +175,10 @@ void setup() {
   pinMode(LED_3, OUTPUT);
   pinMode(H_BRIDGE_ENB, OUTPUT);
   pinMode(LED_5, OUTPUT);
+  pinMode(LED_6, OUTPUT);
+  pinMode(LED_7, OUTPUT);
+  pinMode(LED_8, OUTPUT);
+  
   
   //Set up input pins
   pinMode(BUTTON_1, INPUT);
@@ -311,7 +315,7 @@ float getPinVoltage(int pin) {
   //Why is (float) needed?
   //Why divide by 1024?
   //Why multiply by 5?
-  return 5 * (float)analogRead(pin) / 1024;
+  return 5.08 * (float)analogRead(pin) / 1024;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -641,25 +645,25 @@ void RobotAction() {
   switch(ActionBatteryMonitoring){
     case BATTERY_OFF:
     doTurnLedOff(LED_6);
-    doTurnLedOff(Led_7);
+    doTurnLedOff(LED_7);
     doTurnLedOff(LED_8);
     break;
 
     case BATTERY_LOW_LED:
     doTurnLedOn(LED_6);
-    doTurnLedOff(Led_7);
+    doTurnLedOff(LED_7);
     doTurnLedOff(LED_8);
     break;
 
     case BATTERY_MEDIUM_LED:
     doTurnLedOn(LED_6);
-    doTurnLedOn(Led_7);
+    doTurnLedOn(LED_7);
     doTurnLedOff(LED_8);
     break;
 
     case BATTERY_HIGH_LED:
     doTurnLedOn(LED_6);
-    doTurnLedOn(Led_7);
+    doTurnLedOn(LED_7);
     doTurnLedOn(LED_8);
     break;
 
