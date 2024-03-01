@@ -28,7 +28,7 @@ float computeTau(float measuredTime, float beta)
 // functions that returns voltage on pin
 float pinVoltage(int pin)
 {
-  float v_pin = 5.0 * ( (float) analogRead(pin) / 1024.0 A);
+  float v_pin = 5.0 * ( (float) analogRead(pin) / 1024.0 );
   return(v_pin);
 }
 
@@ -51,6 +51,8 @@ float fsmComputeTau() // state machine to compute tau
         currentTime = millis();
         float T = ((float)(currentTime-startTime))/1000.0;
         startTime = currentTime;
+        //Serial.println("curentTime");
+        //Serial.println(T);
         tau = computeTau(T, beta);  
         digitalWrite(FILTER_IN_PIN, LOW);
       }
