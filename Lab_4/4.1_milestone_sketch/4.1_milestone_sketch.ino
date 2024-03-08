@@ -3,7 +3,7 @@
 #define CAP_SENSOR_SEND     11
 #define CAP_SENSOR_RECEIVE  7
 #define CAP_SENSOR_SAMPLES 40
-#define CAP_SENSOR_TAU_THRESHOLD 100
+#define CAP_SENSOR_TAU_THRESHOLD 32
 
 
 void setup() {
