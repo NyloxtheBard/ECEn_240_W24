@@ -1,3 +1,5 @@
+//This was the code used for the 240 part of milestone 1 that was used to test the capacitive sensor, and compute the tau value.
+
 #include "math.h"  // need this for log()
 #include "Arduino.h"
 //Note the filter is the Resistor and Capacitor

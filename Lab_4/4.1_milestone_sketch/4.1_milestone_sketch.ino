@@ -1,3 +1,5 @@
+//This was the general milestone 1 code used to test the capacitive sensor.
+
 #include "Arduino.h"
 #include <CapacitiveSensor.h>
 #define CAP_SENSOR_SEND     11
