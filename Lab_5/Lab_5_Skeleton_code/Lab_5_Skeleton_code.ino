@@ -81,6 +81,7 @@ your sensors and servos. */
 
 // Voltage at which a photodiode voltage is considered to be present - Lab 5
 
+#define PHOTODIODE_LIGHT_THRESHOLD 2
 
 // Number of samples that the capacitor sensor will use in a measurement - Lab 4
 #define CAP_SENSOR_SAMPLES 40
@@ -247,13 +248,13 @@ void RobotPerception() {
   // Photodiode Sensing
   //Serial.println(getPinVoltage(BUTTON_2)); //uncomment for debugging
   
-  if (isButtonPushed(BUTTON_2)){
+  if (isLight(BUTTON_2)){
     SensedLightLeft = DETECTION_YES;
   } else {
     SensedLightLeft = DETECTION_NO;
   }
   // Remember, you can find the buttons and which one goes to what towards the top of the file
-  if (isButtonPushed(BUTTON_4)) { 
+  if (isLight(BUTTON_4)) { 
     SensedLightRight = DETECTION_YES;
   } else {
     SensedLightRight = DETECTION_NO;
@@ -263,13 +264,13 @@ void RobotPerception() {
       
   /* Add code to detect if light is up or down. Lab 2 milestone 3*/
 
-  if (isButtonPushed(BUTTON_1)){
+  if (isLight(BUTTON_1)){
     SensedLightUp = DETECTION_YES;
   } else {
     SensedLightUp = DETECTION_NO;
   }
   //
-  if (isButtonPushed(BUTTON_5)){
+  if (isLight(BUTTON_5)){
     SensedLightDown = DETECTION_YES;
   } else {
     SensedLightDown = DETECTION_NO;
@@ -379,6 +380,14 @@ bool isCapacitiveSensorTouched() {
   else {
     return false;
   }
+}
+
+bool isLight(int pin) {
+
+  float light = getPinVoltage(pin);
+  //Serial.println(light); // Use this line to test
+  return (light > PHOTODIODE_LIGHT_THRESHOLD);
+  
 }
 
 
