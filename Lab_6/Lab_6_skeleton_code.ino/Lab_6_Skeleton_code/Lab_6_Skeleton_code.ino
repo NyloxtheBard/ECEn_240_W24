@@ -35,19 +35,19 @@ your sensors and servos. */
 // Replace the pin numbers with those you connect to your robot
 
 // Button pins. These will be replaced with the photodiode variables in lab 5
-#define BUTTON_1  A2     // Far left Button - Servo Up
+/*#define BUTTON_1  A2     // Far left Button - Servo Up
 #define BUTTON_2  A3     // Left middle button - Left Motor
 #define BUTTON_3  A4     // Middle Button - Collision
 #define BUTTON_4  A5     // Right middle button - Right Motor
 #define BUTTON_5  A6     // Far right button - Servo Down
-//#define BATTERY_INPUT  A1
+//#define BATTERY_INPUT  A1*/
 
 // LED pins (note that digital pins do not need "D" in front of them)
-//#define LED_1   6       // Far Left LED - Servo Up
-#define H_BRIDGE_ENA   5       // Left Middle LED  - Left Motor
+#define LED_1   6       // Far Left LED - Servo Up
+//#define H_BRIDGE_ENA   5       // Left Middle LED  - Left Motor
 #define LED_3   4       // Middle LED - Collision
-#define H_BRIDGE_ENB   3       // Right Middle LED - Right Motor
-//#define LED_5   2       // Far Right LED - Servo Down
+//#define H_BRIDGE_ENB   3       // Right Middle LED - Right Motor
+#define LED_5   2       // Far Right LED - Servo Down
 //#define LED_6  7 //Red LED, Low Battery
 //#define LED_7  8 //Yellow LED, Med Battery
 //#define LED_8  9 //Green LED, High Battery
@@ -94,7 +94,7 @@ your sensors and servos. */
 #define CAP_SENSOR_TAU_THRESHOLD 500
 
 // Parameters for servo control as well as instantiation - Lab 6
-#define SERVO_START_ANGLE 90
+#define SERVO_START_ANGLE 135
 #define SERVO_UP_LIMIT 180
 #define SERVO_DOWN_LIMIT 45
 static Servo myServo;
@@ -248,7 +248,6 @@ void loop() {
     Serial.println(ActionServoMove);
   }
   RobotAction(); // ACTION
-  MoveServo();
 }
 
 /**********************************************************************************************************
@@ -378,7 +377,7 @@ bool isCollision() {
   if(sonar_distance != 0){ 
     return (sonar_distance < 10);
   } else {
-	return false;
+  return false;
   }
 }
 
@@ -574,12 +573,6 @@ void fsmMoveServoUpAndDown() {
       break;
 
     }
-  // Milestone 3
-  //Create a state machine modeled after the ones in milestones 1 and 2
-  // to plan the servo action based off of the perception of the robot
-  //Remember no light or light in front = servo doesn't move
-  //Light above = servo moves up
-  //Light below = servo moves down
   
 }
 
@@ -786,13 +779,19 @@ void MoveServo() {
     case SERVO_MOVE_STOP:
       break;
     case SERVO_MOVE_UP: // servo moving in positive direction
-      servoAngle++;
+      if (servoAngle <= SERVO_UP_LIMIT) {
+        servoAngle++;
+        myServo.write(servoAngle); // Update the servo to the new angle
+      }
       break;
     case SERVO_MOVE_DOWN: // servo moving in negative direction
-      servoAngle--; 
+      if (servoAngle >= SERVO_DOWN_LIMIT) {
+        servoAngle--;
+        myServo.write(servoAngle); // Update the servo to the new angle
+      }
       break;
   }
-  myServo.write(130); // send angle to the servo 
+  myServo.write(servoAngle); // send angle to the servo 
   // the .write() function expects an integer between 0 and 180 degrees
   //delay(5);
 }
