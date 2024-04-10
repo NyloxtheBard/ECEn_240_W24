@@ -87,14 +87,14 @@ your sensors and servos. */
 
 // Voltage at which a photodiode voltage is considered to be present - Lab 5
 
-#define PHOTODIODE_LIGHT_THRESHOLD 3.4                                                                                                                                                                                                                                         
+#define PHOTODIODE_LIGHT_THRESHOLD 2                                                                                                                                                                                                                                         
 
 // Number of samples that the capacitor sensor will use in a measurement - Lab 4
 #define CAP_SENSOR_SAMPLES 40
 #define CAP_SENSOR_TAU_THRESHOLD 500
 
 // Parameters for servo control as well as instantiation - Lab 6
-#define SERVO_START_ANGLE 135
+#define SERVO_START_ANGLE 140
 #define SERVO_UP_LIMIT 180
 #define SERVO_DOWN_LIMIT 80
 static Servo myServo;
@@ -260,7 +260,7 @@ void RobotPerception() {
 
   
   // Photodiode Sensing
-  //Serial.println(getPinVoltage(BUTTON_2)); //uncomment for debugging
+  Serial.println(getPinVoltage(BUTTON_2)); //uncomment for debugging
   
   if (isLight(BUTTON_2)){
     SensedLightLeft = DETECTION_YES;
@@ -373,7 +373,7 @@ bool isCollision() {
   // the code for the sonar sensor will go in this function.
   // Until then we will use a button to model the sensor.
   int sonar_distance = sonar.ping_cm(); // If the distance is too big, it returns 0.
-  Serial.println(sonar_distance);
+  //Serial.println(sonar_distance);
   if(sonar_distance != 0){ 
     return (sonar_distance < 10);
   } else {
@@ -434,7 +434,7 @@ void fsmCollisionDetection() {
       //There is an obstacle, stop the robot
       ActionCollision = COLLISION_ON; // Sets the action to turn on the collision LED
       /* Add code in milestone 2 to stop the robot's wheels - Hint: ActionRobotDrive = ________ */
-      ActionRobotDrive = DRIVE_STOP;
+      ActionRobotDrive = DRIVE_LEFT;
       
       //State transition logic
       if ( SensedCollision == DETECTION_NO) {
@@ -774,7 +774,7 @@ void MoveServo() {
   // the servo so that it does not exceed its range
   /* Add CurrentServoAngle in lab 6 */
   static int servoAngle = SERVO_START_ANGLE;
-  Serial.println(servoAngle);
+  //Serial.println(servoAngle);
   switch(ActionServoMove) {
     case SERVO_MOVE_STOP:
       break;
