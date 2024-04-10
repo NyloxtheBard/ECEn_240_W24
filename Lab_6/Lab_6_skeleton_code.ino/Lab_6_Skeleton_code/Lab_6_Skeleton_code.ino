@@ -35,12 +35,12 @@ your sensors and servos. */
 // Replace the pin numbers with those you connect to your robot
 
 // Button pins. These will be replaced with the photodiode variables in lab 5
-/*#define BUTTON_1  A2     // Far left Button - Servo Up
+#define BUTTON_1  A2     // Far left Button - Servo Up
 #define BUTTON_2  A3     // Left middle button - Left Motor
 #define BUTTON_3  A4     // Middle Button - Collision
 #define BUTTON_4  A5     // Right middle button - Right Motor
 #define BUTTON_5  A6     // Far right button - Servo Down
-//#define BATTERY_INPUT  A1*/
+//#define BATTERY_INPUT  A1
 
 // LED pins (note that digital pins do not need "D" in front of them)
 #define LED_1   6       // Far Left LED - Servo Up
@@ -87,7 +87,7 @@ your sensors and servos. */
 
 // Voltage at which a photodiode voltage is considered to be present - Lab 5
 
-#define PHOTODIODE_LIGHT_THRESHOLD 2
+#define PHOTODIODE_LIGHT_THRESHOLD 3.4                                                                                                                                                                                                                                         
 
 // Number of samples that the capacitor sensor will use in a measurement - Lab 4
 #define CAP_SENSOR_SAMPLES 40
@@ -96,7 +96,7 @@ your sensors and servos. */
 // Parameters for servo control as well as instantiation - Lab 6
 #define SERVO_START_ANGLE 135
 #define SERVO_UP_LIMIT 180
-#define SERVO_DOWN_LIMIT 45
+#define SERVO_DOWN_LIMIT 80
 static Servo myServo;
 
 // Parameters for ultrasonic sensor and instantiation - Lab 6
