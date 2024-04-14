@@ -9,7 +9,7 @@ void setup()
   
   lcd.begin(16, 2); //Identifies the LCD's number of columns and rows
   
-  lcd.print("Testing!");
+  lcd.print("Step Counter:");
 }
 
 void loop()
