@@ -22,8 +22,8 @@
 your sensors and servos. */
 #include "Arduino.h"
 #include <CapacitiveSensor.h>
-#include <NewPing.h>
-#include <Servo.h>
+#include <NewPing.h>  //Sonar Sensor Library
+#include <Servo.h>  //Servo Motor Library
 
 //
 // Compiler defines: the compiler replaces each name with its assignment
