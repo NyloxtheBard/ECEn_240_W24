@@ -375,7 +375,7 @@ bool isCollision() {
   int sonar_distance = sonar.ping_cm(); // If the distance is too big, it returns 0.
   //Serial.println(sonar_distance);
   if(sonar_distance != 0){ 
-    return (sonar_distance < 10);
+    return (sonar_distance < 30);
   } else {
   return false;
   }
